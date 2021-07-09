@@ -1,6 +1,6 @@
+import 'package:floating_bottom_navigation_bar/floating_bottom_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:way_app/footer.dart';
 
 void main() {
   runApp(Way());
@@ -16,14 +16,13 @@ class Way extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       debugShowCheckedModeBanner: false,
-      home: WayHomePage(title: 'Way'),
+      home: WayHomePage(),
     );
   }
 }
 
 class WayHomePage extends StatefulWidget {
-  WayHomePage({Key? key, this.title}) : super(key: key);
-  final String? title;
+  WayHomePage({Key? key}) : super(key: key);
 
   @override
   _WayHomePageState createState() => _WayHomePageState();
@@ -41,18 +40,33 @@ class _WayHomePageState extends State<WayHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    int _index = 0;
     return Scaffold(
-      // appBar: AppBar(
-      //   title: Text(widget.title!),
-      // ),
       body: GoogleMap(
         onMapCreated: _onMapCreated,
         initialCameraPosition:  CameraPosition(
           target: _center,
-          zoom: 11.0,
+          zoom: 2.0,
         ),
       ),
-      bottomNavigationBar: Footer(),
+
+      // make bottomNavigationBar appear on top of body
+      extendBody: true,
+      bottomNavigationBar: FloatingNavbar(
+        backgroundColor: Colors.white,
+        borderRadius: 40.0,
+        onTap: (int val) => setState(() => _index = val),
+        currentIndex: _index,
+        unselectedItemColor: Colors.black,
+        selectedBackgroundColor: null,
+        items: [
+          FloatingNavbarItem(icon: Icons.account_circle_outlined),
+          FloatingNavbarItem(icon: Icons.group_outlined),
+          FloatingNavbarItem(icon: Icons.public),
+          FloatingNavbarItem(icon: Icons.favorite_border_outlined),
+          FloatingNavbarItem(icon: Icons.message_outlined),
+        ],
+      ),
     );
   }
 }
