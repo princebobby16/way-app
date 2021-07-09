@@ -1,6 +1,6 @@
 # way_app
 
-- Find your friend's location on the map
+Find your friend's location on the map
 
 ## Getting Started
 
