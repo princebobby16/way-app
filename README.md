@@ -17,5 +17,6 @@ samples, guidance on mobile development, and a full API reference.
 
 ## Run `flutter pub get`
 ## Run `dart migrate --apply-changes` for null-safety 
+## Run `flutter pub run build_runner build --delete-conflicting-outputs` after you edit the locations file
 
 ## NB: This project uses null-safety
