@@ -37,6 +37,7 @@ class Region {
   final double zoom;
 }
 
+// TODO: Edit this to mirror friend details
 @JsonSerializable()
 class Office {
   Office({
@@ -66,6 +67,7 @@ class Office {
 @JsonSerializable()
 class Locations {
   Locations({
+    // TODO: change this variable name to friends
     required this.offices,
     required this.regions,
   });
@@ -77,8 +79,9 @@ class Locations {
   final List<Office> offices;
   final List<Region> regions;
 }
-
+// TODO: change this to getFriends
 Future<Locations> getGoogleOffices() async {
+  // TODO: change this to way api url
   const googleLocationsURL = 'https://about.google/static/data/locations.json';
 
   // Retrieve the locations of Google offices

@@ -38,7 +38,8 @@ class _WayHomePageState extends State<WayHomePage> {
   final LatLng _center = const LatLng(5.722064888322568, -0.1762737566947552);
 
   Future<void> _onMapCreated(GoogleMapController controller) async {
-    // mapController = controller;
+
+    // TODO: Get locations of users friends instead of google offices
     final googleOffices = await location.getGoogleOffices();
     setState(() {
       _markers.clear();
