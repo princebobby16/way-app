@@ -59,7 +59,7 @@ class _WayHomePageState extends State<WayHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    int _index = 0;
+    var _index = 0;
     return Scaffold(
       body: GoogleMap(
         onMapCreated: _onMapCreated,
