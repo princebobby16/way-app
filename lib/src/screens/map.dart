@@ -87,6 +87,7 @@ class _WayMapState extends State<WayMap> {
       markers: _markers.values.toSet(),
       myLocationEnabled: true,
       myLocationButtonEnabled: false,
+      zoomControlsEnabled: false,
     );
   }
 }
