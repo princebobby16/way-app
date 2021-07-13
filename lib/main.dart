@@ -1,6 +1,7 @@
-import 'package:floating_bottom_navigation_bar/floating_bottom_navigation_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:way_app/src/screens/bottom_navbar.dart';
+import 'package:way_app/src/components/bottom_navbar.dart';
+import 'package:way_app/src/screens/home.dart';
+import 'package:way_app/src/screens/login.dart';
 import 'package:way_app/src/screens/map.dart';
 
 void main() {
@@ -15,6 +16,11 @@ class Way extends StatelessWidget {
       title: 'Way',
       debugShowCheckedModeBanner: false,
       home: WayHomePage(),
+      initialRoute: '/',
+      routes: {
+        '/login': (context) => Login(),
+        '/home': (context) => Home(),
+      },
     );
   }
 }
@@ -27,15 +33,27 @@ class WayHomePage extends StatefulWidget {
 }
 
 class _WayHomePageState extends State<WayHomePage> {
-
   @override
   Widget build(BuildContext context) {
-    var _index = 0;
-
-    return Scaffold(
-      body: WayMap(),
-      extendBody: true,
-      bottomNavigationBar: WayBottomNavBar()
+    return Material(
+      type: MaterialType.transparency,
+      child: GestureDetector(
+        onTap: () {
+          Navigator.pushNamed(context, '/login');
+        },
+        child: Container(
+          decoration: BoxDecoration(color: Colors.blueAccent),
+          child: Center(
+            child: Text('Way',
+                textAlign: TextAlign.center,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 50,
+                    fontWeight: FontWeight.bold)),
+          ),
+        ),
+      ),
     );
   }
 }

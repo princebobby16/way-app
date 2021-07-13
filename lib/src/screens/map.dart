@@ -29,6 +29,7 @@ class _WayMapState extends State<WayMap> {
       }
       _streamSubscription = _location.onLocationChanged.listen((newLocationData) {
         // update the center value
+        newLocationData = currentLocation;
         _center = LatLng(newLocationData.latitude!, newLocationData.longitude!);
         _mapController.animateCamera(
           CameraUpdate.newCameraPosition(CameraPosition(
