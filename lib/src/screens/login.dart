@@ -128,9 +128,10 @@ class Login extends StatelessWidget {
                         style: ButtonStyle(
                             foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
                             backgroundColor: MaterialStateProperty.all<Color>(Colors.lime),
+                            padding: MaterialStateProperty.all(EdgeInsets.symmetric(vertical: 17.0)),
                             shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                                 RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                                    borderRadius: BorderRadius.all(Radius.circular(40.0)),
                                 )
                             )
                         ),
@@ -138,7 +139,9 @@ class Login extends StatelessWidget {
                           Navigator.pushNamed(context, '/home');
                         },
                       child: Center(
-                        child: Text('Login', style: TextStyle(fontSize: 20.0, color: Colors.black54),),
+                        child: Text('LOGIN',
+                            style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold, color: Colors.black54, letterSpacing: 1.5)
+                        ),
                       ),
                       )
                     ],
