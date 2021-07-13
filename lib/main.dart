@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:way_app/src/components/bottom_navbar.dart';
 import 'package:way_app/src/screens/home.dart';
 import 'package:way_app/src/screens/login.dart';
-import 'package:way_app/src/screens/map.dart';
 
 void main() {
   runApp(Way());

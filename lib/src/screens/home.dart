@@ -16,6 +16,6 @@ class _HomeState extends State<Home> {
         body: WayMap(),
         extendBody: true,
         bottomNavigationBar: WayBottomNavBar()
-    );;
+    );
   }
 }
