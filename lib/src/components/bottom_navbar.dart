@@ -16,7 +16,7 @@ class _WayBottomNavBarState extends State<WayBottomNavBar> {
     return FloatingNavbar(
       backgroundColor: Colors.white,
       borderRadius: 40.0,
-      elevation: 30,
+      elevation: 10,
       onTap: (int val) => setState(() => _index = val),
       currentIndex: _index,
       unselectedItemColor: Colors.black,

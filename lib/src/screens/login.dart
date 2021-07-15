@@ -4,11 +4,13 @@ class Login extends StatelessWidget {
   const Login({Key? key}) : super(key: key);
 
   Widget _buildEmail() {
-    return Container(
+    return AnimatedContainer(
+      duration: Duration(seconds: 1),
+      curve: Curves.easeInSine,
       alignment: Alignment.centerLeft,
       height: 60.0,
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(40),
           boxShadow: [
             BoxShadow(
               color: Colors.blueAccent.withAlpha(100),
@@ -20,6 +22,7 @@ class Login extends StatelessWidget {
       ),
       child: TextField(
         keyboardType: TextInputType.text,
+        cursorColor: Colors.white,
         style: TextStyle(
           color: Colors.white,
         ),
@@ -34,11 +37,13 @@ class Login extends StatelessWidget {
   }
 
   Widget _buildPassword() {
-    return Container(
+    return AnimatedContainer(
+      duration: Duration(seconds: 1),
+      curve: Curves.easeInSine,
       alignment: Alignment.centerLeft,
       height: 60.0,
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(40),
           boxShadow: [
             BoxShadow(
               color: Colors.blueAccent.withAlpha(100),
@@ -51,6 +56,7 @@ class Login extends StatelessWidget {
       child: TextField(
         keyboardType: TextInputType.text,
         obscureText: true,
+        cursorColor: Colors.white,
         style: TextStyle(
           color: Colors.white,
         ),
@@ -69,7 +75,7 @@ class Login extends StatelessWidget {
     return Scaffold(
       body: Stack(
         children: [
-          Container(
+          AnimatedContainer(
             width: double.infinity,
             height: double.infinity,
             decoration: BoxDecoration(
@@ -88,9 +94,12 @@ class Login extends StatelessWidget {
                   0.7,
                   0.9
                 ])),
+            curve: Curves.easeInSine,
+            duration: Duration(seconds: 1),
           ),
-          Container(
+          AnimatedContainer(
             height: double.infinity,
+            duration: Duration(seconds: 1),
             child: SingleChildScrollView(
               physics: AlwaysScrollableScrollPhysics(),
               padding: EdgeInsets.symmetric(horizontal: 40.0, vertical: 120.0),

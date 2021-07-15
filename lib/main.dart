@@ -14,46 +14,12 @@ class Way extends StatelessWidget {
     return MaterialApp(
       title: 'Way',
       debugShowCheckedModeBanner: false,
-      home: WayHomePage(),
+      home: Login(),
       initialRoute: '/',
       routes: {
-        '/login': (context) => Login(),
         '/home': (context) => Home(),
         '/signup': (context) => SignUp(),
       },
-    );
-  }
-}
-
-class WayHomePage extends StatefulWidget {
-  WayHomePage({Key? key}) : super(key: key);
-
-  @override
-  _WayHomePageState createState() => _WayHomePageState();
-}
-
-class _WayHomePageState extends State<WayHomePage> {
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      type: MaterialType.transparency,
-      child: GestureDetector(
-        onTap: () {
-          Navigator.pushNamed(context, '/login');
-        },
-        child: Container(
-          decoration: BoxDecoration(color: Colors.blueAccent),
-          child: Center(
-            child: Text('Way',
-                textAlign: TextAlign.center,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 50,
-                    fontWeight: FontWeight.bold)),
-          ),
-        ),
-      ),
     );
   }
 }
