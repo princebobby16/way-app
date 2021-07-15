@@ -14,7 +14,7 @@ class Login extends StatelessWidget {
               color: Colors.blueAccent.withAlpha(100),
               spreadRadius: 5,
               blurRadius: 2,
-              offset: Offset(0, 4), // changes position of shadow
+              offset: Offset(0, 3), // changes position of shadow
             ),
           ]
       ),
@@ -143,6 +143,19 @@ class Login extends StatelessWidget {
                             style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold, color: Colors.black54, letterSpacing: 1.5)
                         ),
                       ),
+                      ),
+                      SizedBox(height: 100),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          GestureDetector(
+                            onTap: (){
+                                Navigator.pushNamed(context, '/signup');
+                            },
+                            child: Text('SignUp', style: TextStyle(color: Colors.white)),
+                          ),
+                          Text('Forgot password?', style: TextStyle(color: Colors.white))
+                        ],
                       )
                     ],
                   )

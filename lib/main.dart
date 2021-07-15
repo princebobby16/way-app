@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:way_app/src/screens/home.dart';
 import 'package:way_app/src/screens/login.dart';
+import 'package:way_app/src/screens/signup.dart';
 
 void main() {
   runApp(Way());
@@ -18,6 +19,7 @@ class Way extends StatelessWidget {
       routes: {
         '/login': (context) => Login(),
         '/home': (context) => Home(),
+        '/signup': (context) => SignUp(),
       },
     );
   }
