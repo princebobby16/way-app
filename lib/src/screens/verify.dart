@@ -1,26 +1,31 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:way_app/src/components/input_field.dart';
 
-class SignUp extends StatefulWidget {
-  const SignUp({Key? key}) : super(key: key);
+class Verify extends StatefulWidget {
+  const Verify({Key? key}) : super(key: key);
 
   @override
-  _SignUpState createState() => _SignUpState();
+  _VerifyState createState() => _VerifyState();
 }
 
-class _SignUpState extends State<SignUp> {
-  // final TextEditingController _textController = TextEditingController();
+class _VerifyState extends State<Verify> {
 
-  Widget _buildFirstNameEmail() {
-    return WayInput(placeholder: 'First Name', icon: Icons.edit, keyboardType: TextInputType.name);
+  Widget _buildUsername() {
+    return WayInput(placeholder: 'Username', icon: Icons.person, keyboardType: TextInputType.text);
   }
 
-  Widget _buildLastName() {
-    return WayInput(placeholder: 'Last Name', icon: Icons.all_inclusive_outlined, keyboardType: TextInputType.name);
+  Widget _buildPassword() {
+    return WayInput(placeholder: 'Password', icon: Icons.lock, hideText: true);
   }
 
-  Widget _buildPhoneNumber() {
-    return WayInput(placeholder: 'Phone Number', icon: Icons.call, keyboardType: TextInputType.phone);
+  Widget _buildPasswordConfirmation() {
+    return WayInput(placeholder: 'Confirm Password', icon: Icons.lock_outline_sharp, hideText: true);
+  }
+
+
+  Widget _buildPin() {
+    return WayInput(placeholder: 'PIN', icon: Icons.security, keyboardType: TextInputType.number);
   }
 
   @override
@@ -52,7 +57,7 @@ class _SignUpState extends State<SignUp> {
           ),
           AnimatedContainer(
             height: double.infinity,
-            duration: Duration(seconds: 2),
+            duration: Duration(seconds: 1),
             child: SingleChildScrollView(
               physics: AlwaysScrollableScrollPhysics(),
               padding: EdgeInsets.symmetric(horizontal: 40.0, vertical: 120.0),
@@ -71,23 +76,25 @@ class _SignUpState extends State<SignUp> {
                   ),
                   SizedBox(height: 30),
                   Text(
-                    'Sign Up',
+                    'Verify',
                     style: TextStyle(
                         color: Colors.white,
                         fontFamily: 'Open Sans',
                         fontSize: 40,
                         fontWeight: FontWeight.bold),
                   ),
-                  SizedBox(height: 60),
+                  SizedBox(height: 40),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      _buildFirstNameEmail(),
-                      SizedBox(height: 20),
-                      _buildLastName(),
-                      SizedBox(height: 20),
-                      _buildPhoneNumber(),
-                      SizedBox(height: 40),
+                      _buildUsername(),
+                      SizedBox(height: 15),
+                      _buildPassword(),
+                      SizedBox(height: 15),
+                      _buildPasswordConfirmation(),
+                      SizedBox(height: 15),
+                      _buildPin(),
+                      SizedBox(height: 30),
                       ElevatedButton(
                         style: ButtonStyle(
                             foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
@@ -101,15 +108,15 @@ class _SignUpState extends State<SignUp> {
                         ),
                         onPressed: () {
                           // TODO: SEND DATA TO SERVER
-                          Navigator.pushNamed(context, '/verify');
+                          Navigator.pushNamed(context, '/home');
                         },
                         child: Center(
-                          child: Text('VERIFY',
+                          child: Text('SIGN UP',
                               style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold, color: Colors.black54, letterSpacing: 1.5)
                           ),
                         ),
                       ),
-                      SizedBox(height: 60),
+                      SizedBox(height: 30),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -119,7 +126,7 @@ class _SignUpState extends State<SignUp> {
                             },
                             child: Text('Login', style: TextStyle(color: Colors.white)),
                           ),
-                          Text('Forgot password?', style: TextStyle(color: Colors.white))
+                          Text('Request PIN', style: TextStyle(color: Colors.white))
                         ],
                       )
                     ],

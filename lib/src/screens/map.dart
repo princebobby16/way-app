@@ -21,26 +21,25 @@ class _WayMapState extends State<WayMap> {
   StreamSubscription? _streamSubscription;
 
   Future<void> getCurrentLocation() async {
-    try{
-
-      var currentLocation  = await _location.getLocation();
-      if (_streamSubscription != null){
+    try {
+      var currentLocation = await _location.getLocation();
+      if (_streamSubscription != null) {
         await _streamSubscription!.cancel();
       }
-      _streamSubscription = _location.onLocationChanged.listen((newLocationData) {
+      _streamSubscription =
+          _location.onLocationChanged.listen((newLocationData) {
         // update the center value
         newLocationData = currentLocation;
         _center = LatLng(newLocationData.latitude!, newLocationData.longitude!);
-        _mapController.animateCamera(
-          CameraUpdate.newCameraPosition(CameraPosition(
-            target: _center,
-            tilt: 0.0,
-            bearing: 0.0,
-            zoom: 18.0
-          ))
-        );
+        _mapController.animateCamera(CameraUpdate.newCameraPosition(
+            CameraPosition(
+                target: _center, tilt: 0.0, bearing: 0.0, zoom: 18.0)));
       });
-
+      _streamSubscription!.onDone(() {
+        // unreachable code
+        print(
+            '--------------------------------------------USER LOCATION FOUND----------------------------------------');
+      });
     } on PlatformException catch (e) {
       if (e.code == 'PERMISSION_DENIED') {
         debugPrint('Permission denied');
@@ -59,16 +58,13 @@ class _WayMapState extends State<WayMap> {
     final usersFriends = await friends.getFriends();
     setState(() {
       _markers.clear();
-      for (final friend in usersFriends.friends){
+      for (final friend in usersFriends.friends) {
         final marker = Marker(
             markerId: MarkerId(friend.first_name),
             position: LatLng(friend.location[0], friend.location[1]),
             draggable: false,
             infoWindow: InfoWindow(
-                title: friend.first_name,
-                snippet: friend.phone_number
-            )
-        );
+                title: friend.first_name, snippet: friend.phone_number));
         _markers[friend.first_name] = marker;
       }
     });
@@ -78,7 +74,7 @@ class _WayMapState extends State<WayMap> {
   Widget build(BuildContext context) {
     return GoogleMap(
       onMapCreated: _onMapCreated,
-      initialCameraPosition:  CameraPosition(
+      initialCameraPosition: CameraPosition(
         target: _center,
         tilt: 0,
         bearing: 0,

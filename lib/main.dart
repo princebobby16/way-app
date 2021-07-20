@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:way_app/src/screens/home.dart';
 import 'package:way_app/src/screens/login.dart';
 import 'package:way_app/src/screens/signup.dart';
+import 'package:way_app/src/screens/verify.dart';
 
 void main() {
   runApp(Way());
@@ -14,11 +15,15 @@ class Way extends StatelessWidget {
     return MaterialApp(
       title: 'Way',
       debugShowCheckedModeBanner: false,
-      home: Login(),
+      theme: ThemeData(
+        scaffoldBackgroundColor: Color(0xFF73AEF5),
+      ),
+      home: SignUp(),
       initialRoute: '/',
       routes: {
         '/home': (context) => Home(),
-        '/signup': (context) => SignUp(),
+        '/login': (context) => Login(),
+        '/verify': (context) => Verify()
       },
     );
   }

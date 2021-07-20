@@ -1,73 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:way_app/src/components/input_field.dart';
 
 class Login extends StatelessWidget {
   const Login({Key? key}) : super(key: key);
 
   Widget _buildEmail() {
-    return AnimatedContainer(
-      duration: Duration(seconds: 1),
-      curve: Curves.easeInSine,
-      alignment: Alignment.centerLeft,
-      height: 60.0,
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(40),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.blueAccent.withAlpha(100),
-              spreadRadius: 5,
-              blurRadius: 2,
-              offset: Offset(0, 3), // changes position of shadow
-            ),
-          ]
-      ),
-      child: TextField(
-        keyboardType: TextInputType.text,
-        cursorColor: Colors.white,
-        style: TextStyle(
-          color: Colors.white,
-        ),
-        decoration: InputDecoration(border: InputBorder.none,
-            contentPadding: EdgeInsets.only(top: 14.0),
-            prefixIcon: Icon(Icons.email, color: Colors.white,),
-            hintText: 'Username',
-            hintStyle: TextStyle(color: Colors.white70)
-        ),
-      ),
-    );
+    return WayInput(placeholder: 'Username', icon: Icons.mail);
   }
 
   Widget _buildPassword() {
-    return AnimatedContainer(
-      duration: Duration(seconds: 1),
-      curve: Curves.easeInSine,
-      alignment: Alignment.centerLeft,
-      height: 60.0,
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(40),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.blueAccent.withAlpha(100),
-              spreadRadius: 5,
-              blurRadius: 2,
-              offset: Offset(0, 3), // changes position of shadow
-            ),
-          ]
-      ),
-      child: TextField(
-        keyboardType: TextInputType.text,
-        obscureText: true,
-        cursorColor: Colors.white,
-        style: TextStyle(
-          color: Colors.white,
-        ),
-        decoration: InputDecoration(border: InputBorder.none,
-            contentPadding: EdgeInsets.only(top: 14.0),
-            prefixIcon: Icon(Icons.lock, color: Colors.white,),
-            hintText: 'Password',
-            hintStyle: TextStyle(color: Colors.white70)
-        ),
-      ),
-    );
+    return WayInput(placeholder: 'Password', icon: Icons.lock, hideText: true);
   }
 
   @override
@@ -145,6 +87,7 @@ class Login extends StatelessWidget {
                             )
                         ),
                         onPressed: () {
+                          // TODO: SEND DATA TO SERVER
                           Navigator.pushNamed(context, '/home');
                         },
                       child: Center(
@@ -159,7 +102,7 @@ class Login extends StatelessWidget {
                         children: [
                           GestureDetector(
                             onTap: (){
-                                Navigator.pushNamed(context, '/signup');
+                                Navigator.pushNamed(context, '/');
                             },
                             child: Text('SignUp', style: TextStyle(color: Colors.white)),
                           ),
