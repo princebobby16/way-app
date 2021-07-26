@@ -1,0 +1,218 @@
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart' show SharedPreferences;
+import 'package:way_app/src/components/input_field.dart';
+import 'package:way_app/src/models/user.dart' as user;
+import 'package:way_app/src/screens/signup.dart' show SignupScreenDetails;
+
+class VerifyScreenDetails {
+  VerifyScreenDetails({required this.userId, required this.phoneNumber});
+
+  String userId;
+  String phoneNumber;
+}
+
+class SignUpCont extends StatefulWidget {
+  const SignUpCont({Key? key}) : super(key: key);
+
+  @override
+  _SignUpContState createState() => _SignUpContState();
+}
+
+class _SignUpContState extends State<SignUpCont> {
+  late final TextEditingController username = TextEditingController();
+  late final TextEditingController password = TextEditingController();
+  late final TextEditingController passwordConf = TextEditingController();
+  late final TextEditingController birthDay = TextEditingController();
+
+  Widget _buildUsername() {
+    return WayInput(
+        placeholder: 'Username',
+        icon: Icons.person,
+        keyboardType: TextInputType.text,
+        textEditingController: username);
+  }
+
+  Widget _buildPassword() {
+    return WayInput(
+        placeholder: 'Password',
+        icon: Icons.lock,
+        hideText: true,
+        textEditingController: password);
+  }
+
+  Widget _buildPasswordConfirmation() {
+    return WayInput(
+        placeholder: 'Confirm Password',
+        icon: Icons.lock_outline_sharp,
+        hideText: true,
+        textEditingController: passwordConf);
+  }
+
+  Widget _buildBirthDay() {
+    return WayInput(
+        placeholder: 'BirthDay',
+        icon: Icons.date_range,
+        keyboardType: TextInputType.datetime,
+        textEditingController: birthDay);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final args =
+        ModalRoute.of(context)!.settings.arguments as SignupScreenDetails;
+
+    return Scaffold(
+      body: Stack(
+        children: [
+          AnimatedContainer(
+            width: double.infinity,
+            height: double.infinity,
+            decoration: BoxDecoration(
+                gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                  Color(0xFF73AEF5),
+                  Color(0xFF61A4F1),
+                  Color(0xFF478DE0),
+                  Color(0xFF398AE5)
+                ],
+                    stops: [
+                  0.1,
+                  0.4,
+                  0.7,
+                  0.9
+                ])),
+            curve: Curves.easeInSine,
+            duration: Duration(seconds: 1),
+          ),
+          AnimatedContainer(
+            height: double.infinity,
+            duration: Duration(seconds: 1),
+            child: SingleChildScrollView(
+              physics: AlwaysScrollableScrollPhysics(),
+              padding: EdgeInsets.symmetric(horizontal: 40.0, vertical: 120.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  IconButton(
+                      icon: Icon(Icons.arrow_back, color: Colors.black),
+                      onPressed: () {
+                        Navigator.pop(context);
+                      }),
+                  SizedBox(height: 30),
+                  Text(
+                    'Way',
+                    style: TextStyle(
+                        color: Colors.yellow,
+                        fontFamily: 'Open Sans',
+                        fontSize: 30,
+                        fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(height: 30),
+                  Text(
+                    'Sign Up',
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontFamily: 'Open Sans',
+                        fontSize: 40,
+                        fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(height: 40),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _buildUsername(),
+                      SizedBox(height: 15),
+                      _buildPassword(),
+                      SizedBox(height: 15),
+                      _buildPasswordConfirmation(),
+                      SizedBox(height: 15),
+                      _buildBirthDay(),
+                      SizedBox(height: 30),
+                      ElevatedButton(
+                        style: ButtonStyle(
+                            foregroundColor:
+                                MaterialStateProperty.all<Color>(Colors.white),
+                            backgroundColor:
+                                MaterialStateProperty.all<Color>(Colors.lime),
+                            padding: MaterialStateProperty.all(
+                                EdgeInsets.symmetric(vertical: 17.0)),
+                            shape: MaterialStateProperty.all<
+                                RoundedRectangleBorder>(RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(40.0)),
+                            ))),
+                        onPressed: () async {
+                          // TODO: SEND DATA TO SERVER
+                          print(args.firstName + ' === ' + args.lastName);
+                          print(username.value.toString() +
+                              ' === ' +
+                              password.value.toString());
+                          var resp = await user.createUser(
+                              args.firstName,
+                              args.lastName,
+                              args.phoneNumber,
+                              username.text.toString(),
+                              password.text.toString(),
+                              passwordConf.text.toString());
+
+                          if (resp.code == 500) {
+                            await showDialog<void>(
+                              context: context,
+                              builder: (BuildContext context) =>
+                                  AlertDialog(content: Text(resp.message)),
+                            );
+                            return;
+                          }
+
+                          // store small data on disk
+                          final prefs = await SharedPreferences.getInstance();
+                          if (resp.code == 200) {
+                            await prefs.setString('user_id', resp.userId);
+                          }
+
+                          print(prefs.getString('user_id'));
+
+                          await Navigator.pushNamed(context, '/verify',
+                              arguments: VerifyScreenDetails(
+                                  userId: prefs.getString('user_id').toString(),
+                                  phoneNumber: args.phoneNumber));
+                        },
+                        child: Center(
+                          child: Text('Sign Up',
+                              style: TextStyle(
+                                  fontSize: 18.0,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black54,
+                                  letterSpacing: 1.5)),
+                        ),
+                      ),
+                      SizedBox(height: 30),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.pushNamed(context, '/login');
+                            },
+                            child: Text('Login',
+                                style: TextStyle(color: Colors.white)),
+                          ),
+                          Text('Verify Account',
+                              style: TextStyle(color: Colors.white))
+                        ],
+                      )
+                    ],
+                  )
+                ],
+              ),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+}

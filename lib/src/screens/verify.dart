@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:way_app/src/components/input_field.dart';
+import 'package:way_app/src/screens/signup_cont.dart' show VerifyScreenDetails;
 
 class Verify extends StatefulWidget {
   const Verify({Key? key}) : super(key: key);
@@ -11,25 +11,24 @@ class Verify extends StatefulWidget {
 
 class _VerifyState extends State<Verify> {
 
-  Widget _buildUsername() {
-    return WayInput(placeholder: 'Username', icon: Icons.person, keyboardType: TextInputType.text);
-  }
+  TextEditingController phoneNumber = TextEditingController();
 
-  Widget _buildPassword() {
-    return WayInput(placeholder: 'Password', icon: Icons.lock, hideText: true);
-  }
-
-  Widget _buildPasswordConfirmation() {
-    return WayInput(placeholder: 'Confirm Password', icon: Icons.lock_outline_sharp, hideText: true);
-  }
-
-
-  Widget _buildPin() {
-    return WayInput(placeholder: 'PIN', icon: Icons.security, keyboardType: TextInputType.number);
+  Widget _buildPhoneNumber(TextEditingController controller) {
+    return WayInput(
+      enabled: false,
+        placeholder: 'phone number',
+        icon: Icons.call,
+        keyboardType: TextInputType.number,
+        textEditingController: controller);
   }
 
   @override
   Widget build(BuildContext context) {
+    final args =
+    ModalRoute.of(context)!.settings.arguments as VerifyScreenDetails;
+    phoneNumber.text = args.phoneNumber;
+
+    var num = phoneNumber.text.toString();
     return Scaffold(
       body: Stack(
         children: [
@@ -65,7 +64,10 @@ class _VerifyState extends State<Verify> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SizedBox(height: 70),
+                  IconButton(icon: Icon(Icons.arrow_back, color: Colors.black), onPressed: (){
+                    Navigator.pop(context);
+                  }),
+                  SizedBox(height: 30),
                   Text(
                     'Way',
                     style: TextStyle(
@@ -76,7 +78,7 @@ class _VerifyState extends State<Verify> {
                   ),
                   SizedBox(height: 30),
                   Text(
-                    'Verify',
+                    'Verification Pin',
                     style: TextStyle(
                         color: Colors.white,
                         fontFamily: 'Open Sans',
@@ -87,13 +89,31 @@ class _VerifyState extends State<Verify> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      _buildUsername(),
+                      _buildPhoneNumber(phoneNumber),
+                      // WayInput(enabled: false, textEditingController: phoneNumber, placeholder: 'phone number',),
+                      SizedBox(height: 30),
+                      ElevatedButton(
+                        style: ButtonStyle(
+                            foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
+                            backgroundColor: MaterialStateProperty.all<Color>(Colors.lime),
+                            padding: MaterialStateProperty.all(EdgeInsets.symmetric(vertical: 17.0)),
+                            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.all(Radius.circular(40.0)),
+                                )
+                            )
+                        ),
+                        onPressed: () {
+                          // TODO: SEND DATA TO SERVER
+                        },
+                        child: Center(
+                          child: Text('Send PIN',
+                              style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold, color: Colors.black54, letterSpacing: 1.5)
+                          ),
+                        ),
+                      ),
                       SizedBox(height: 15),
-                      _buildPassword(),
-                      SizedBox(height: 15),
-                      _buildPasswordConfirmation(),
-                      SizedBox(height: 15),
-                      _buildPin(),
+                      WayInput(placeholder: '_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _'),
                       SizedBox(height: 30),
                       ElevatedButton(
                         style: ButtonStyle(
@@ -111,12 +131,18 @@ class _VerifyState extends State<Verify> {
                           Navigator.pushNamed(context, '/home');
                         },
                         child: Center(
-                          child: Text('SIGN UP',
+                          child: Text('Sign Up',
                               style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold, color: Colors.black54, letterSpacing: 1.5)
                           ),
                         ),
                       ),
-                      SizedBox(height: 30),
+                      SizedBox(height: 15),
+                      Center(
+                        child: Text('Sending PIN to $num',
+                            style: TextStyle(fontSize: 15.0, color: Colors.white, letterSpacing: 1.5)
+                        ),
+                      ),
+                      SizedBox(height: 50),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -126,7 +152,7 @@ class _VerifyState extends State<Verify> {
                             },
                             child: Text('Login', style: TextStyle(color: Colors.white)),
                           ),
-                          Text('Request PIN', style: TextStyle(color: Colors.white))
+                          Text('Verify Account', style: TextStyle(color: Colors.white))
                         ],
                       )
                     ],

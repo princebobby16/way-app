@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:way_app/src/screens/home.dart';
 import 'package:way_app/src/screens/login.dart';
 import 'package:way_app/src/screens/signup.dart';
+import 'package:way_app/src/screens/signup_cont.dart';
 import 'package:way_app/src/screens/verify.dart';
 
 void main() {
@@ -9,7 +10,9 @@ void main() {
 }
 
 class Way extends StatelessWidget {
-  // This widget is the root of your application.
+  /*
+  This widget is the root of the [Way] application
+  */
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -23,6 +26,7 @@ class Way extends StatelessWidget {
       routes: {
         '/home': (context) => Home(),
         '/login': (context) => Login(),
+        '/next': (context) => SignUpCont(),
         '/verify': (context) => Verify()
       },
     );

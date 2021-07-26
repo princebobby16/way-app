@@ -1,6 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:way_app/src/components/input_field.dart';
 
+class SignupScreenDetails {
+  SignupScreenDetails({required this.firstName, required this.lastName, required this.phoneNumber});
+  
+  String firstName;
+  String lastName;
+  String phoneNumber;
+}
+
 class SignUp extends StatefulWidget {
   const SignUp({Key? key}) : super(key: key);
 
@@ -9,18 +17,20 @@ class SignUp extends StatefulWidget {
 }
 
 class _SignUpState extends State<SignUp> {
-  // final TextEditingController _textController = TextEditingController();
+  final TextEditingController _firstName = TextEditingController();
+  final TextEditingController _lastName = TextEditingController();
+  final TextEditingController _phoneNumber = TextEditingController();
 
   Widget _buildFirstNameEmail() {
-    return WayInput(placeholder: 'First Name', icon: Icons.edit, keyboardType: TextInputType.name);
+    return WayInput(placeholder: 'First Name', textEditingController: _firstName, icon: Icons.edit, keyboardType: TextInputType.name);
   }
 
   Widget _buildLastName() {
-    return WayInput(placeholder: 'Last Name', icon: Icons.all_inclusive_outlined, keyboardType: TextInputType.name);
+    return WayInput(placeholder: 'Last Name', textEditingController: _lastName, icon: Icons.all_inclusive_outlined, keyboardType: TextInputType.name);
   }
 
   Widget _buildPhoneNumber() {
-    return WayInput(placeholder: 'Phone Number', icon: Icons.call, keyboardType: TextInputType.phone);
+    return WayInput(placeholder: 'Phone Number', textEditingController: _phoneNumber, icon: Icons.call, keyboardType: TextInputType.phone);
   }
 
   @override
@@ -101,12 +111,26 @@ class _SignUpState extends State<SignUp> {
                         ),
                         onPressed: () {
                           // TODO: SEND DATA TO SERVER
-                          Navigator.pushNamed(context, '/verify');
+                          Navigator.pushNamed(
+                              context, 
+                              '/next',
+                            arguments: SignupScreenDetails(
+                                firstName: _firstName.text.toString(),
+                                lastName: _lastName.text.toString(),
+                                phoneNumber: _phoneNumber.text.toString()
+                            )
+                          );
                         },
                         child: Center(
-                          child: Text('VERIFY',
-                              style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold, color: Colors.black54, letterSpacing: 1.5)
-                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                                Text('Next',
+                                    style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold, color: Colors.black54, letterSpacing: 1.5)
+                                ),
+                              Icon(Icons.arrow_forward, color: Colors.black54,)
+                            ],
+                          )
                         ),
                       ),
                       SizedBox(height: 60),
@@ -119,7 +143,7 @@ class _SignUpState extends State<SignUp> {
                             },
                             child: Text('Login', style: TextStyle(color: Colors.white)),
                           ),
-                          Text('Forgot password?', style: TextStyle(color: Colors.white))
+                          Text('Verify Account', style: TextStyle(color: Colors.white))
                         ],
                       )
                     ],

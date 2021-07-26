@@ -5,15 +5,19 @@ import 'package:flutter/material.dart';
 class WayInput extends StatefulWidget {
   const WayInput({Key? key,
     required this.placeholder,
-    required this.icon,
+    this.icon,
+    this.enabled = true,
     this.keyboardType = TextInputType.text,
-    this.hideText = false
+    this.hideText = false,
+    this.textEditingController,
   }) : super(key: key);
 
   final String placeholder;
-  final IconData icon;
+  final bool enabled;
+  final IconData? icon;
   final TextInputType keyboardType;
   final bool hideText;
+  final TextEditingController? textEditingController;
 
   @override
   _WayInputState createState() => _WayInputState();
@@ -39,6 +43,8 @@ class _WayInputState extends State<WayInput> {
           ]
       ),
       child: TextField(
+        enabled: widget.enabled,
+        controller: widget.textEditingController,
         keyboardType: widget.keyboardType,
         obscureText: widget.hideText,
         cursorColor: Colors.white,
