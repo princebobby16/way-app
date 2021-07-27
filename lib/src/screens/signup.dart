@@ -110,16 +110,8 @@ class _SignUpState extends State<SignUp> {
                             )
                         ),
                         onPressed: () {
-                          // TODO: SEND DATA TO SERVER
-                          Navigator.pushNamed(
-                              context, 
-                              '/next',
-                            arguments: SignupScreenDetails(
-                                firstName: _firstName.text.toString(),
-                                lastName: _lastName.text.toString(),
-                                phoneNumber: _phoneNumber.text.toString()
-                            )
-                          );
+                          // Send input data to next route
+                          continueToNextRoute(context);
                         },
                         child: Center(
                           child: Row(
@@ -154,6 +146,18 @@ class _SignUpState extends State<SignUp> {
           )
         ],
       ),
+    );
+  }
+
+  void continueToNextRoute(BuildContext context) {
+    Navigator.pushNamed(
+        context, 
+        '/next',
+      arguments: SignupScreenDetails(
+          firstName: _firstName.text.toString(),
+          lastName: _lastName.text.toString(),
+          phoneNumber: _phoneNumber.text.toString()
+      )
     );
   }
 }

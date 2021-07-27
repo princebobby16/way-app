@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart' show SharedPreferences;
+import 'package:way_app/src/components/alert_box.dart';
 import 'package:way_app/src/components/input_field.dart';
 import 'package:way_app/src/models/user.dart' as user;
 import 'package:way_app/src/screens/signup.dart' show SignupScreenDetails;
@@ -146,40 +147,8 @@ class _SignUpContState extends State<SignUpCont> {
                                   BorderRadius.all(Radius.circular(40.0)),
                             ))),
                         onPressed: () async {
-                          // TODO: SEND DATA TO SERVER
-                          print(args.firstName + ' === ' + args.lastName);
-                          print(username.value.toString() +
-                              ' === ' +
-                              password.value.toString());
-                          var resp = await user.createUser(
-                              args.firstName,
-                              args.lastName,
-                              args.phoneNumber,
-                              username.text.toString(),
-                              password.text.toString(),
-                              passwordConf.text.toString());
-
-                          if (resp.code == 500) {
-                            await showDialog<void>(
-                              context: context,
-                              builder: (BuildContext context) =>
-                                  AlertDialog(content: Text(resp.message)),
-                            );
-                            return;
-                          }
-
-                          // store small data on disk
-                          final prefs = await SharedPreferences.getInstance();
-                          if (resp.code == 200) {
-                            await prefs.setString('user_id', resp.userId);
-                          }
-
-                          print(prefs.getString('user_id'));
-
-                          await Navigator.pushNamed(context, '/verify',
-                              arguments: VerifyScreenDetails(
-                                  userId: prefs.getString('user_id').toString(),
-                                  phoneNumber: args.phoneNumber));
+                          // send dat to the server and continue
+                          await continueToNextScreen(args, context);
                         },
                         child: Center(
                           child: Text('Sign Up',
@@ -215,4 +184,77 @@ class _SignUpContState extends State<SignUpCont> {
       ),
     );
   }
+
+  Future<void> continueToNextScreen(SignupScreenDetails args, BuildContext context) async {
+    var data = await sendDataToServer(args, context);
+
+    if (data.ok == false) {
+      return;
+    }
+    
+    // navigate to next screen
+    await Navigator.pushNamed(context, '/verify',
+        arguments: VerifyScreenDetails(
+            userId: data.preferences.getString('user_id').toString(),
+            phoneNumber: args.phoneNumber));
+  }
+
+  Future<RequestData> sendDataToServer(SignupScreenDetails args, BuildContext context) async {
+    print(args.firstName + ' === ' + args.lastName);
+    print(username.text.toString() +
+        ' === ' +
+        password.text.toString());
+
+    // for storing data on the disk
+    final prefs = await SharedPreferences.getInstance();
+
+    final ok = false;
+
+    var data = RequestData(prefs, ok);
+
+    var resp = await user.createUser(
+        args.firstName,
+        args.lastName,
+        args.phoneNumber,
+        username.text.toString(),
+        password.text.toString(),
+        passwordConf.text.toString());
+    
+    if (resp.code == 0) {
+      await showAlert(context, resp);
+      data = RequestData(prefs, false);
+    }
+    
+    if (resp.code == 500) {
+      await showAlert(context, resp);
+      data = RequestData(prefs, false);
+    }
+    
+    // store small data on disk
+    if (resp.code == 200) {
+      await prefs.setString('user_id', resp.userId);
+      data = RequestData(prefs, true);
+    }
+    
+    print(prefs.getString('user_id'));
+    return data;
+  }
+
+  Future<void> showAlert(BuildContext context, user.Resp resp) async {
+    await showDialog<void>(
+      context: context,
+      builder: (BuildContext context) =>
+          WayAlertBox(message: resp.message, title: 'Error',),
+    );
+  }
+}
+
+// for implementing returning two variables from a function like in golang
+class RequestData {
+
+  RequestData(this.preferences, this.ok);
+
+  final SharedPreferences preferences;
+  final bool ok;
+
 }
