@@ -3,7 +3,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
-import 'package:shared_preferences/shared_preferences.dart' show SharedPreferences;
+import 'package:shared_preferences/shared_preferences.dart'
+    show SharedPreferences;
 import 'package:way_app/src/components/alert_box.dart';
 import 'package:way_app/src/components/input_field.dart';
 import 'package:way_app/src/models/user.dart' as user;
@@ -28,8 +29,8 @@ class _SignUpContState extends State<SignUpCont> {
   late final TextEditingController password = TextEditingController();
   late final TextEditingController passwordConf = TextEditingController();
   late final TextEditingController birthDay = TextEditingController();
-  final RoundedLoadingButtonController _btnController = RoundedLoadingButtonController();
-
+  final RoundedLoadingButtonController _btnController =
+      RoundedLoadingButtonController();
 
   Widget _buildUsername() {
     return WayInput(
@@ -138,49 +139,19 @@ class _SignUpContState extends State<SignUpCont> {
                       SizedBox(height: 15),
                       _buildBirthDay(),
                       SizedBox(height: 30),
-
                       RoundedLoadingButton(
-                          controller: _btnController,
-                          onPressed: () async {
-                            await continueToNextScreen(args, context);
-                          },
-                        color: Colors.yellow,
-                          child: Text('Sign Up',
-                              style: TextStyle(
-                              color: Colors.black54,
+                        controller: _btnController,
+                        onPressed: () async {
+                          await continueToNextScreen(args, context);
+                        },
+                        color: Colors.lime,
+                        child: Text('Sign Up',
+                            style: TextStyle(
+                                color: Colors.black54,
                                 fontSize: 18.0,
                                 letterSpacing: 1.5,
-                                fontWeight: FontWeight.bold
-                          )
-                          ),
+                                fontWeight: FontWeight.bold)),
                       ),
-
-                      // ElevatedButton(
-                      //   style: ButtonStyle(
-                      //       foregroundColor:
-                      //           MaterialStateProperty.all<Color>(Colors.white),
-                      //       backgroundColor:
-                      //           MaterialStateProperty.all<Color>(Colors.lime),
-                      //       padding: MaterialStateProperty.all(
-                      //           EdgeInsets.symmetric(vertical: 17.0)),
-                      //       shape: MaterialStateProperty.all<
-                      //           RoundedRectangleBorder>(RoundedRectangleBorder(
-                      //         borderRadius:
-                      //             BorderRadius.all(Radius.circular(40.0)),
-                      //       ))),
-                      //   onPressed: () async {
-                      //     // send dat to the server and continue
-                      //     await continueToNextScreen(args, context);
-                      //   },
-                      //   child: Center(
-                      //     child: Text('Sign Up',
-                      //         style: TextStyle(
-                      //             fontSize: 18.0,
-                      //             fontWeight: FontWeight.bold,
-                      //             color: Colors.black54,
-                      //             letterSpacing: 1.5)),
-                      //   ),
-                      // ),
                       SizedBox(height: 30),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -207,20 +178,24 @@ class _SignUpContState extends State<SignUpCont> {
     );
   }
 
-  Future<void> continueToNextScreen(SignupScreenDetails args, BuildContext context) async {
+  Future<void> continueToNextScreen(
+      SignupScreenDetails args, BuildContext context) async {
     var data = await sendDataToServer(args, context);
 
     if (data.ok == false) {
       Timer(Duration(seconds: 2), () {
-        _btnController.reset();
+        Timer(Duration(seconds: 1), () {
+          _btnController.reset();
+        });
+        _btnController.error();
       });
       return;
     }
 
-    Timer(Duration(seconds: 3), () {
+    Timer(Duration(seconds: 2), () {
       _btnController.success();
     });
-    
+
     // navigate to next screen
     await Navigator.pushNamed(context, '/verify',
         arguments: VerifyScreenDetails(
@@ -228,11 +203,10 @@ class _SignUpContState extends State<SignUpCont> {
             phoneNumber: args.phoneNumber));
   }
 
-  Future<RequestData> sendDataToServer(SignupScreenDetails args, BuildContext context) async {
+  Future<RequestData> sendDataToServer(
+      SignupScreenDetails args, BuildContext context) async {
     print(args.firstName + ' === ' + args.lastName);
-    print(username.text.toString() +
-        ' === ' +
-        password.text.toString());
+    print(username.text.toString() + ' === ' + password.text.toString());
 
     // for storing data on the disk
     final prefs = await SharedPreferences.getInstance();
@@ -248,23 +222,23 @@ class _SignUpContState extends State<SignUpCont> {
         username.text.toString(),
         password.text.toString(),
         passwordConf.text.toString());
-    
+
     if (resp.code == 0) {
       await showAlert(context, resp);
       data = RequestData(prefs, false);
     }
-    
+
     if (resp.code == 500) {
       await showAlert(context, resp);
       data = RequestData(prefs, false);
     }
-    
+
     // store small data on disk
     if (resp.code == 200) {
       await prefs.setString('user_id', resp.userId);
       data = RequestData(prefs, true);
     }
-    
+
     print(prefs.getString('user_id'));
     return data;
   }
@@ -272,18 +246,18 @@ class _SignUpContState extends State<SignUpCont> {
   Future<void> showAlert(BuildContext context, user.Resp resp) async {
     await showDialog<void>(
       context: context,
-      builder: (BuildContext context) =>
-          WayAlertBox(message: resp.message, title: 'Error',),
+      builder: (BuildContext context) => WayAlertBox(
+        message: resp.message,
+        title: 'Error',
+      ),
     );
   }
 }
 
 // for implementing returning two variables from a function like in golang
 class RequestData {
-
   RequestData(this.preferences, this.ok);
 
   final SharedPreferences preferences;
   final bool ok;
-
 }
