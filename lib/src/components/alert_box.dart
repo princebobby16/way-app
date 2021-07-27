@@ -10,9 +10,16 @@ class WayAlertBox extends StatelessWidget {
   Widget build(BuildContext context) {
     return AlertDialog(
       title: Text(title),
-      // titlePadding: EdgeInsets.only(bottom: ),
-      titleTextStyle: TextStyle(backgroundColor: Colors.red),
       content: Text(message),
+      actions: <Widget>[
+        // usually buttons at the bottom of the dialog
+        TextButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          child: Text('Close'),
+        ),
+      ],
     );
   }
 }

@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:rounded_loading_button/rounded_loading_button.dart';
 import 'package:shared_preferences/shared_preferences.dart' show SharedPreferences;
 import 'package:way_app/src/components/alert_box.dart';
 import 'package:way_app/src/components/input_field.dart';
@@ -25,6 +28,8 @@ class _SignUpContState extends State<SignUpCont> {
   late final TextEditingController password = TextEditingController();
   late final TextEditingController passwordConf = TextEditingController();
   late final TextEditingController birthDay = TextEditingController();
+  final RoundedLoadingButtonController _btnController = RoundedLoadingButtonController();
+
 
   Widget _buildUsername() {
     return WayInput(
@@ -133,32 +138,49 @@ class _SignUpContState extends State<SignUpCont> {
                       SizedBox(height: 15),
                       _buildBirthDay(),
                       SizedBox(height: 30),
-                      ElevatedButton(
-                        style: ButtonStyle(
-                            foregroundColor:
-                                MaterialStateProperty.all<Color>(Colors.white),
-                            backgroundColor:
-                                MaterialStateProperty.all<Color>(Colors.lime),
-                            padding: MaterialStateProperty.all(
-                                EdgeInsets.symmetric(vertical: 17.0)),
-                            shape: MaterialStateProperty.all<
-                                RoundedRectangleBorder>(RoundedRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(40.0)),
-                            ))),
-                        onPressed: () async {
-                          // send dat to the server and continue
-                          await continueToNextScreen(args, context);
-                        },
-                        child: Center(
+
+                      RoundedLoadingButton(
+                          controller: _btnController,
+                          onPressed: () async {
+                            await continueToNextScreen(args, context);
+                          },
+                        color: Colors.yellow,
                           child: Text('Sign Up',
                               style: TextStyle(
-                                  fontSize: 18.0,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black54,
-                                  letterSpacing: 1.5)),
-                        ),
+                              color: Colors.black54,
+                                fontSize: 18.0,
+                                letterSpacing: 1.5,
+                                fontWeight: FontWeight.bold
+                          )
+                          ),
                       ),
+
+                      // ElevatedButton(
+                      //   style: ButtonStyle(
+                      //       foregroundColor:
+                      //           MaterialStateProperty.all<Color>(Colors.white),
+                      //       backgroundColor:
+                      //           MaterialStateProperty.all<Color>(Colors.lime),
+                      //       padding: MaterialStateProperty.all(
+                      //           EdgeInsets.symmetric(vertical: 17.0)),
+                      //       shape: MaterialStateProperty.all<
+                      //           RoundedRectangleBorder>(RoundedRectangleBorder(
+                      //         borderRadius:
+                      //             BorderRadius.all(Radius.circular(40.0)),
+                      //       ))),
+                      //   onPressed: () async {
+                      //     // send dat to the server and continue
+                      //     await continueToNextScreen(args, context);
+                      //   },
+                      //   child: Center(
+                      //     child: Text('Sign Up',
+                      //         style: TextStyle(
+                      //             fontSize: 18.0,
+                      //             fontWeight: FontWeight.bold,
+                      //             color: Colors.black54,
+                      //             letterSpacing: 1.5)),
+                      //   ),
+                      // ),
                       SizedBox(height: 30),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -189,8 +211,15 @@ class _SignUpContState extends State<SignUpCont> {
     var data = await sendDataToServer(args, context);
 
     if (data.ok == false) {
+      Timer(Duration(seconds: 2), () {
+        _btnController.reset();
+      });
       return;
     }
+
+    Timer(Duration(seconds: 3), () {
+      _btnController.success();
+    });
     
     // navigate to next screen
     await Navigator.pushNamed(context, '/verify',
