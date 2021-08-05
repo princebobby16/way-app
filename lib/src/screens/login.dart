@@ -12,6 +12,32 @@ class Login extends StatelessWidget {
     return WayInput(placeholder: 'Password', icon: Icons.lock, hideText: true);
   }
 
+  Widget _buildNextButton(BuildContext context) {
+    return ElevatedButton(
+      style: ButtonStyle(
+          foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
+          backgroundColor: MaterialStateProperty.all<Color>(Colors.lime),
+          padding:
+              MaterialStateProperty.all(EdgeInsets.symmetric(vertical: 17.0)),
+          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+              RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(40.0)),
+          ))),
+      onPressed: () {
+        // TODO: SEND DATA TO SERVER
+        Navigator.pushNamed(context, '/home');
+      },
+      child: Center(
+        child: Text('LOGIN',
+            style: TextStyle(
+                fontSize: 18.0,
+                fontWeight: FontWeight.bold,
+                color: Colors.black54,
+                letterSpacing: 1.5)),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -75,38 +101,20 @@ class Login extends StatelessWidget {
                       SizedBox(height: 30),
                       _buildPassword(),
                       SizedBox(height: 60),
-                      ElevatedButton(
-                        style: ButtonStyle(
-                            foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
-                            backgroundColor: MaterialStateProperty.all<Color>(Colors.lime),
-                            padding: MaterialStateProperty.all(EdgeInsets.symmetric(vertical: 17.0)),
-                            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                                RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.all(Radius.circular(40.0)),
-                                )
-                            )
-                        ),
-                        onPressed: () {
-                          // TODO: SEND DATA TO SERVER
-                          Navigator.pushNamed(context, '/home');
-                        },
-                      child: Center(
-                        child: Text('LOGIN',
-                            style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold, color: Colors.black54, letterSpacing: 1.5)
-                        ),
-                      ),
-                      ),
+                      _buildNextButton(context),
                       SizedBox(height: 100),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           GestureDetector(
-                            onTap: (){
-                                Navigator.pushNamed(context, '/');
+                            onTap: () {
+                              Navigator.pushNamed(context, '/');
                             },
-                            child: Text('SignUp', style: TextStyle(color: Colors.white)),
+                            child: Text('Sign Up',
+                                style: TextStyle(color: Colors.white)),
                           ),
-                          Text('Forgot password?', style: TextStyle(color: Colors.white))
+                          Text('Forgot password?',
+                              style: TextStyle(color: Colors.white))
                         ],
                       )
                     ],

@@ -11,9 +11,11 @@ import 'package:way_app/src/models/user.dart' as user;
 import 'package:way_app/src/screens/signup.dart' show SignupScreenDetails;
 
 class VerifyScreenDetails {
-  VerifyScreenDetails({required this.userId, required this.phoneNumber});
+  VerifyScreenDetails({required this.userId, required this.phoneNumber, required this.username, required this.password});
 
   String userId;
+  String username;
+  String password;
   String phoneNumber;
 }
 
@@ -105,7 +107,7 @@ class _SignUpContState extends State<SignUpCont> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   IconButton(
-                      icon: Icon(Icons.arrow_back, color: Colors.black),
+                      icon: Icon(Icons.arrow_back, color: Colors.white),
                       onPressed: () {
                         Navigator.pop(context);
                       }),
@@ -183,8 +185,8 @@ class _SignUpContState extends State<SignUpCont> {
     var data = await sendDataToServer(args, context);
 
     if (data.ok == false) {
-      Timer(Duration(seconds: 2), () {
-        Timer(Duration(seconds: 1), () {
+      Timer(Duration(seconds: 1), () {
+        Timer(Duration(seconds: 0), () {
           _btnController.reset();
         });
         _btnController.error();
@@ -192,7 +194,7 @@ class _SignUpContState extends State<SignUpCont> {
       return;
     }
 
-    Timer(Duration(seconds: 2), () {
+    Timer(Duration(milliseconds: 100), () {
       _btnController.success();
     });
 
@@ -200,7 +202,10 @@ class _SignUpContState extends State<SignUpCont> {
     await Navigator.pushNamed(context, '/verify',
         arguments: VerifyScreenDetails(
             userId: data.preferences.getString('user_id').toString(),
-            phoneNumber: args.phoneNumber));
+            phoneNumber: args.phoneNumber,
+          username: username.text.toString(),
+          password: password.text.toString()
+        ));
   }
 
   Future<RequestData> sendDataToServer(

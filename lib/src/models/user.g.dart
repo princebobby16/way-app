@@ -64,3 +64,26 @@ Map<String, dynamic> _$DataToJson(Data instance) => <String, dynamic>{
       'code': instance.code,
       'message': instance.message,
     };
+
+Verify _$VerifyFromJson(Map<String, dynamic> json) {
+  return Verify(
+    phone_number: json['phone_number'] as String,
+    pin: json['pin'] as String,
+  );
+}
+
+Map<String, dynamic> _$VerifyToJson(Verify instance) => <String, dynamic>{
+      'phone_number': instance.phone_number,
+      'pin': instance.pin,
+    };
+
+OTPRequestData _$OTPRequestDataFromJson(Map<String, dynamic> json) {
+  return OTPRequestData(
+    phone_number: json['phone_number'] as String,
+  );
+}
+
+Map<String, dynamic> _$OTPRequestDataToJson(OTPRequestData instance) =>
+    <String, dynamic>{
+      'phone_number': instance.phone_number,
+    };

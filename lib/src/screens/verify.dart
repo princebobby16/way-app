@@ -1,6 +1,14 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:rounded_loading_button/rounded_loading_button.dart';
+import 'package:way_app/src/components/alert_box.dart';
 import 'package:way_app/src/components/input_field.dart';
+import 'package:way_app/src/models/login.dart';
+import 'package:way_app/src/models/user.dart' as user;
 import 'package:way_app/src/screens/signup_cont.dart' show VerifyScreenDetails;
+import 'package:pin_input_text_field/pin_input_text_field.dart';
+import 'package:sms_autofill/sms_autofill.dart';
 
 class Verify extends StatefulWidget {
   const Verify({Key? key}) : super(key: key);
@@ -9,10 +17,49 @@ class Verify extends StatefulWidget {
   _VerifyState createState() => _VerifyState();
 }
 
-class _VerifyState extends State<Verify> {
-
+class _VerifyState extends State<Verify> with CodeAutoFill {
+  // local variables
   TextEditingController phoneNumber = TextEditingController();
+  final RoundedLoadingButtonController _buttonController = RoundedLoadingButtonController();
+  final RoundedLoadingButtonController _btnController = RoundedLoadingButtonController();
 
+  String btnText = 'Send Pin';
+  String _code = '';
+  String appSignature = '';
+
+  @override
+  void initState() {
+    super.initState();
+    listenForCode();
+
+    SmsAutoFill().getAppSignature.then((signature) {
+      setState(() {
+        appSignature = signature;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    SmsAutoFill().unregisterListener();
+    super.dispose();
+    cancel();
+  }
+
+  ButtonStyle _elevatedButtonStyle() {
+    return ButtonStyle(
+        foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
+        backgroundColor: MaterialStateProperty.all<Color>(Colors.lime),
+        padding: MaterialStateProperty.all(EdgeInsets.symmetric(vertical: 17.0)),
+        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+            RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(40.0)),
+            )
+        )
+    );
+  }
+
+  // local methods
   Widget _buildPhoneNumber(TextEditingController controller) {
     return WayInput(
       enabled: false,
@@ -22,13 +69,25 @@ class _VerifyState extends State<Verify> {
         textEditingController: controller);
   }
 
+  Future<void> showAlert(BuildContext context, String message) async {
+    await showDialog<void>(
+      context: context,
+      builder: (BuildContext context) => WayAlertBox(
+        message: message,
+        title: 'Error',
+      ),
+    );
+  }
+
+  // build method: screen entry point
   @override
   Widget build(BuildContext context) {
     final args =
     ModalRoute.of(context)!.settings.arguments as VerifyScreenDetails;
-    phoneNumber.text = args.phoneNumber;
 
+    phoneNumber.text = args.phoneNumber;
     var num = phoneNumber.text.toString();
+
     return Scaffold(
       body: Stack(
         children: [
@@ -64,7 +123,7 @@ class _VerifyState extends State<Verify> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  IconButton(icon: Icon(Icons.arrow_back, color: Colors.black), onPressed: (){
+                  IconButton(icon: Icon(Icons.arrow_back, color: Colors.white), onPressed: (){
                     Navigator.pop(context);
                   }),
                   SizedBox(height: 30),
@@ -90,51 +149,57 @@ class _VerifyState extends State<Verify> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       _buildPhoneNumber(phoneNumber),
-                      // WayInput(enabled: false, textEditingController: phoneNumber, placeholder: 'phone number',),
                       SizedBox(height: 30),
-                      ElevatedButton(
-                        style: ButtonStyle(
-                            foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
-                            backgroundColor: MaterialStateProperty.all<Color>(Colors.lime),
-                            padding: MaterialStateProperty.all(EdgeInsets.symmetric(vertical: 17.0)),
-                            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                                RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.all(Radius.circular(40.0)),
-                                )
-                            )
-                        ),
-                        onPressed: () {
-                          // TODO: SEND DATA TO SERVER
+                      RoundedLoadingButton(
+                        controller: _buttonController,
+                        onPressed: () async {
+                          await SmsAutoFill().listenForCode;
+                          await getOTPAndShowAlertIfAnythingGoesWrong(args, context);
                         },
-                        child: Center(
-                          child: Text('Send PIN',
-                              style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold, color: Colors.black54, letterSpacing: 1.5)
-                          ),
-                        ),
+                        color: Colors.lime,
+                        child: Text(btnText,
+                            style: TextStyle(
+                                color: Colors.black54,
+                                fontSize: 18.0,
+                                letterSpacing: 1.5,
+                                fontWeight: FontWeight.bold)),
                       ),
                       SizedBox(height: 15),
-                      WayInput(placeholder: '_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _'),
-                      SizedBox(height: 30),
-                      ElevatedButton(
-                        style: ButtonStyle(
-                            foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
-                            backgroundColor: MaterialStateProperty.all<Color>(Colors.lime),
-                            padding: MaterialStateProperty.all(EdgeInsets.symmetric(vertical: 17.0)),
-                            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                                RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.all(Radius.circular(40.0)),
-                                )
-                            )
+                      PinFieldAutoFill(
+                        decoration: UnderlineDecoration(
+                          textStyle: TextStyle(fontSize: 20, color: Colors.white),
+                          colorBuilder: FixedColorBuilder(Colors.white.withOpacity(0.7)),
                         ),
-                        onPressed: () {
-                          // TODO: SEND DATA TO SERVER
-                          Navigator.pushNamed(context, '/home');
+                        codeLength: 4,
+                        currentCode: _code,
+                        onCodeSubmitted: (code) {
+                          _code = code;
                         },
-                        child: Center(
-                          child: Text('Sign Up',
-                              style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold, color: Colors.black54, letterSpacing: 1.5)
-                          ),
-                        ),
+                        onCodeChanged: (code) {
+                          if (code!.length == 4) {
+                            FocusScope.of(context).requestFocus(FocusNode());
+                          }
+                        },
+                      ),
+                      SizedBox(height: 30),
+                      RoundedLoadingButton(
+                        controller: _btnController,
+                        onPressed: () async {
+                          var t = await verifyPIN(args, context);
+                          if (t == 0) {
+                            return;
+                          } else {
+                            var resp = login(args.username, args.password);
+                          }
+                          // await Navigator.pushNamed(context, '/home');
+                        },
+                        color: Colors.lime,
+                        child: Text('Verify Pin',
+                            style: TextStyle(
+                                color: Colors.black54,
+                                fontSize: 18.0,
+                                letterSpacing: 1.5,
+                                fontWeight: FontWeight.bold)),
                       ),
                       SizedBox(height: 15),
                       Center(
@@ -164,5 +229,66 @@ class _VerifyState extends State<Verify> {
         ],
       ),
     );
+  }
+
+  Future<void> getOTPAndShowAlertIfAnythingGoesWrong(VerifyScreenDetails args, BuildContext context) async {
+    var resp = await user.requestOTP(args.phoneNumber);
+    
+    if (resp.code == 0) {
+      await showAlert(context, resp.message);
+      _buttonController.reset();
+    }
+    
+    if (resp.code == 500) {
+      await showAlert(context, resp.message);
+      _buttonController.reset();
+    }
+    
+    // store small data on disk
+    if (resp.code == 200) {
+      await showAlert(context, resp.message);
+    
+      Timer(Duration(milliseconds: 200), () {
+
+        _buttonController.success();
+    
+      });
+    
+    }
+  }
+
+  Future<int> verifyPIN(VerifyScreenDetails args, BuildContext context) async {
+    print('CODE: ' + _code);
+
+    var type = 0;
+    var resp = await user.verifyPIN(args.phoneNumber, _code);
+
+    if (resp.code == 0) {
+      await showAlert(context, resp.message);
+      _btnController.reset();
+    }
+
+    if (resp.code == 500) {
+      await showAlert(context, resp.message);
+      _btnController.reset();
+    }
+
+    // store small data on disk
+    if (resp.code == 201) {
+      Timer(Duration(milliseconds: 200), () {
+
+        _btnController.success();
+
+      });
+      type = 1;
+    }
+    return type;
+  }
+
+  @override
+  void codeUpdated() {
+    setState(() {
+      _code = code!;
+    });
   }
 }
